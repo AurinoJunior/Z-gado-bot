@@ -8,30 +8,37 @@ client.on('ready', () => {
 });
 
 client.on('message', msg  => {
-  if(!msg.guild) return
+  try {
+    if(!msg.guild) return
 
-  if(msg.content.startsWith('!gado')) {
-    const user = msg.mentions.users.first()
-    if(user && !user.bot) {
-      const member = msg.guild.member(user)
-      const dataAtual = new Date()
+    if(msg.content.startsWith('!gado')) {
+      const user = msg.mentions.users.first()
+      if(user && !user.bot) {
+        const member = msg.guild.member(user)
+        const dataAtual = new Date()
 
-      if(member) {
-        // const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
-        // console.log(member.user);
-        // member.roles.add(cargoGado)
+        if(member) {
+          const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
+          member.roles.add(cargoGado)
 
-        pasto.push({
-          id: member.user.id,
-          nick: member.user.username,
-          entrada: formataData(dataAtual),
-          saida: calculaSaida(dataAtual),
-          roles: member._roles
-        })
+          member._roles.map(role => {
+            member.roles.remove(role)
+          })
+
+          pasto.push({
+            id: member.user.id,
+            nick: member.user.username,
+            entrada: formataData(dataAtual),
+            saida: calculaSaida(dataAtual),
+            roles: member._roles
+          })
+        }
+      } else {
+        msg.reply('Um bot não pode pastar seu jão');
       }
-    } else {
-      msg.reply('Um bot não pode pastar seu jão');
     }
+  } catch(e) {
+    console.log('Erro:', e)
   }
 
   if(msg.content.startsWith('!boi')) {
@@ -39,7 +46,6 @@ client.on('message', msg  => {
     if(user && !user.bot){
       const member = msg.guild.member(user)
       if(member) {
-        console.log(msg.mentions)
         const gado = pasto.find(user => user.id === member.user.id)
         if(gado) {
           msg.channel.send(`Boi: **${gado.nick}**`) // Trocar por marcação
@@ -51,10 +57,14 @@ client.on('message', msg  => {
   }
 
   if(msg.content === '!pasto') {
-    msg.channel.send('Pastando no momento:')
-    pasto.map((gado) => {
-      msg.channel.send(`🐮 ${gado.nick}`)
-    })
+    if(pasto.length > 0) {
+      msg.channel.send('Pastando no momento:')
+      pasto.map((gado) => {
+        msg.channel.send(`🐮 ${gado.nick}`)
+      })
+    } else {
+      msg.reply('Pasto vazio 🎉')
+    }
   }
 });
 
