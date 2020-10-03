@@ -17,15 +17,16 @@ client.on('message', msg  => {
       const dataAtual = new Date()
 
       if(member) {
-        const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
-        console.log(cargoGado);
-        member.roles.add(cargoGado)
+        // const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
+        // console.log(member.user);
+        // member.roles.add(cargoGado)
 
         pasto.push({
+          id: member.user.id,
           nick: member.user.username,
           entrada: formataData(dataAtual),
           saida: calculaSaida(dataAtual),
-          // roles: member._roles
+          roles: member._roles
         })
       }
     } else {
@@ -33,25 +34,26 @@ client.on('message', msg  => {
     }
   }
 
-  // if(msg.content.startsWith('!boi')) {
-  //   const user = msg.mentions.users.first()
-  //   if(user){
-  //     const member = msg.guild.member(user)
-  //     if(member){
-  //       const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
-  //       console.log(cargoGado);
-  //       member.roles.add(cargoGado)
-  //     }
-  //   }
-  // }
+  if(msg.content.startsWith('!boi')) {
+    const user = msg.mentions.users.first()
+    if(user && !user.bot){
+      const member = msg.guild.member(user)
+      if(member) {
+        console.log(msg.mentions)
+        const gado = pasto.find(user => user.id === member.user.id)
+        if(gado) {
+          msg.channel.send(`Boi: **${gado.nick}**`) // Trocar por marcação
+          msg.channel.send(`Entrou no pasto em **${gado.entrada}**`)
+          msg.channel.send(`A Saida será em **${gado.saida}**`)
+        }
+      }
+    }
+  }
 
   if(msg.content === '!pasto') {
     msg.channel.send('Pastando no momento:')
     pasto.map((gado) => {
-      msg.channel.send(`🐮 Boi ${gado.nick}`)
-      msg.channel.send(`Entrou no pasto em ${gado.entrada}`)
-      msg.channel.send(`A Saida será em ${gado.saida}`)
-      msg.channel.send(`--------------------`)
+      msg.channel.send(`🐮 ${gado.nick}`)
     })
   }
 });
