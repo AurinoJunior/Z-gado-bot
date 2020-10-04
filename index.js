@@ -101,4 +101,4 @@ client.login(process.env.BOT_TOKEN)
 app.get('/healthcheck', (req, res) => {
   res.send('Zé Gado Ta Online')
 })
-app.listen(3333)
+app.listen(process.env.PORT || 3333)
