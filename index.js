@@ -1,3 +1,4 @@
+const app = require('express')()
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -96,3 +97,8 @@ function calculaSaida(dataEntrada){
 }
 
 client.login(process.env.BOT_TOKEN)
+
+app.get('/healthcheck', (req, res) => {
+  res.send('Zé Gado Ta Online')
+})
+app.listen(3333)
