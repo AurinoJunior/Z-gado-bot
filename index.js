@@ -19,19 +19,20 @@ client.on('message', msg  => {
         const dataAtual = new Date()
 
         if(member) {
-          const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
-          member.roles.add(cargoGado)
-
-          member._roles.map(role => {
-            member.roles.remove(role)
-          })
-
+          // Salva usuario no pasto
           pasto.push({
             id: member.user.id,
             nick: member.user.username,
             entrada: formataData(dataAtual),
             saida: calculaSaida(dataAtual),
             roles: member._roles
+          })
+
+          const cargoGado = msg.guild.roles.cache.find(role => role.id === '648574586702528561')
+          member.roles.add(cargoGado)
+
+          member._roles.map(role => {
+            member.roles.remove(role)
           })
         }
         msg.channel.send(`O boi **${member.user.username}** foi pastar`)
